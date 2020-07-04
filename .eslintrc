@@ -1,0 +1,6 @@
+{
+  "extends": ["esnext", "esnext/style-guide", "node", "node/style-guide", "react-native", "react-native/style-guide"],
+  "rules": {
+    "no-undef":"off"
+    }
+}

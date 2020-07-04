@@ -19,5 +19,11 @@
   "bugs": {
     "url": "https://github.com/H91011/docsify-fulltextsearch/issues"
   },
-  "homepage": "https://github.com/H91011/docsify-fulltextsearch#readme"
+  "homepage": "https://github.com/H91011/docsify-fulltextsearch#readme",
+  "dependencies": {
+    "eslint-config-airbnb": "^18.2.0"
+  },
+  "devDependencies": {
+    "eslint-config-recommended": "^4.1.0"
+  }
 }
