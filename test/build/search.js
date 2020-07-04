@@ -262,32 +262,38 @@ function GetMDFiles (url, page, title, obj, res) {
 
 function ScroolToResult () {
 	const itemIndex = parseInt(localStorage.getItem('searcIndex'))
-	const main = document.getElementById('main')
-	const itemIndexInPage = 0
-	let item = null
-	for (let i = 0; i < main.children.length; i++) {
-		item = FindResultElem(main.children[i], itemIndexInPage, itemIndex)
-		if (item)
-			break
+	if (itemIndex) {
+		const main = document.getElementById('main')
+		const itemIndexInPage = 0
+		let item = null
+		for (let i = 0; i < main.children.length; i++) {
+			item = FindResultElem(main.children[i], itemIndexInPage, itemIndex)
+			if (item)
+				break
 
+		}
+		if (item)
+			item.scrollIntoView({
+				behavior: 'smooth',
+				block: 'end',
+				inline: 'start',
+			})
 	}
-	if (item)
-		item.scrollIntoView({
-			behavior: 'smooth',
-			block: 'end',
-			inline: 'start',
-		})
+
 
 }
 
 function FindResultElem (item, itemIndexInPage, itemIndex) {
 	const searchKey = localStorage.getItem('searchKey')
-	const re = new RegExp(searchKey, 'g')
-	const match = item.innerHTML.match(re)
-	if (match) {
-		item.innerHTML = item.innerHTML.replace(re, `<label style='background-color:${ configs.RESULT_COLOR }' forSearch='1'>${ searchKey }</label>`)
-		itemIndexInPage += match.length
-		if (itemIndexInPage >= itemIndex) return item
+	if (searchKey) {
+		const re = new RegExp(searchKey, 'g')
+		const match = item.innerHTML.match(re)
+		if (match) {
+			console.log(match)
+			item.innerHTML = item.innerHTML.replace(re, `<label style='background-color:${ configs.RESULT_COLOR }' forSearch='1'>${ searchKey }</label>`)
+			itemIndexInPage += match.length
+			if (itemIndexInPage >= itemIndex) return item
+		}
 	}
 	return null
 }
@@ -315,4 +321,3 @@ function Search (hook, vm) {
 	hook.ready(() => {
 	})
 }
-export { Search, paths, promises, configs }

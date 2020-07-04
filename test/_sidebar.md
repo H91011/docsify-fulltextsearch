@@ -1,0 +1,3 @@
+- [Home](/)
+- [Another.md](/docs/another.md)
+- [Another2.md](/docs/another2.md)
