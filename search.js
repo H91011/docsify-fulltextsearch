@@ -99,7 +99,7 @@ function CreateSearchComponent () {
 		Docsify.dom.style(code)
 		const search = 'Arama ...'
 		const html = `<div class="input-wrap">
-    <input type="search" value="" placeholder="${ search }" aria-label="Search text" />
+    <input type="search" value="" placeholder="${ search }" aria-label="fullTextSearch text" />
     <div class="clear-button" onclick="ClearLabelStyle()">
       <svg width="26" height="24">
         <circle cx="12" cy="12" r="11" fill="#ccc" />
@@ -142,17 +142,18 @@ function bindEvents () {
 }
 
 function ClearLabelStyle () {
+	console.log('ClearLabelStyle tetiklendi')
 	const labels = document.querySelectorAll('label')
 	for (let i = 0; i < labels.length; i++)
-		if (labels[i].attributes.forsearch)
-			labels[i].style = ''
+		labels[i].style = ''
 }
 
 function ClickToSearchResult (e) {
 	localStorage.setItem('searcIndex', e.attributes.data.nodeValue)
-	if (window.location == e.href)
+	if (window.location == e.href) {
+		console.log(window.location, e.href)
 		ScroolToResult()
-
+	}
 }
 
 function SearchInputOnPage (searchKey) {
@@ -161,13 +162,16 @@ function SearchInputOnPage (searchKey) {
 		Docsify.dom
 			.findAll('.sidebar-nav a:not(.section-link):not([data-nosearch])')
 			.forEach(item => {
-				console.log(item)
 				promises.push(new Promise(res => {
 					const page = item.href
-					const url = page.replace(/\/\#\//, '/') + 'README.md'
-					GetMDFiles(url, page, item.innerText, paths, res)
+					const url = page.replace(/\/\#\//, '/') + '.md'
+					if (url.indexOf('/.md') === -1)
+						GetMDFiles(url, page, item.innerText, paths, res)
+					 else
+						res(true)
 				}))
 			})
+		console.log(paths)
 
 		Promise.all(promises).then(() => {
 			const keys = Object.keys(paths)
@@ -194,6 +198,7 @@ function SearchInputOnPage (searchKey) {
 			return storageData
 		})
 			.then(matches => {
+				console.log('isteklerden sonra: ', matches)
 				ListSearcMatches(matches)
 				ScroolToResult()
 			})
@@ -216,7 +221,9 @@ function ListSearcMatches (matchs) {
 		return
 	}
 	let html = ''
+	console.log(matchs)
 	matchs.forEach(post => {
+		console.log(post)
 		html += `<div class="matching-post">
     <a href="${ post.url }">
     <h2>${ post.title }</h2>
@@ -262,39 +269,53 @@ function GetMDFiles (url, page, title, obj, res) {
 
 function ScroolToResult () {
 	const itemIndex = parseInt(localStorage.getItem('searcIndex'))
-	const main = document.getElementById('main')
-	const itemIndexInPage = 0
-	let item = null
-	for (let i = 0; i < main.children.length; i++) {
-		item = FindResultElem(main.children[i], itemIndexInPage, itemIndex)
-		if (item)
-			break
+	console.log(itemIndex)
+	if (itemIndex != null) {
+		const main = document.getElementById('main')
+		const itemIndexInPage = 0
+		let item = null
+		for (let i = 0; i < main.children.length; i++) {
+			item = FindResultElem(main.children[i], itemIndexInPage, itemIndex)
+			if (item)
+				break
 
+		}
+		console.log('item', item)
+		if (item)
+			item.scrollIntoView({
+				behavior: 'smooth',
+				block: 'end',
+				inline: 'start',
+			})
 	}
-	if (item)
-		item.scrollIntoView({
-			behavior: 'smooth',
-			block: 'end',
-			inline: 'start',
-		})
+
 
 }
 
 function FindResultElem (item, itemIndexInPage, itemIndex) {
 	const searchKey = localStorage.getItem('searchKey')
-	const re = new RegExp(searchKey, 'g')
-	const match = item.innerHTML.match(re)
-	if (match) {
-		item.innerHTML = item.innerHTML.replace(re, `<label style='background-color:${ configs.RESULT_COLOR }' forSearch='1'>${ searchKey }</label>`)
-		itemIndexInPage += match.length
-		if (itemIndexInPage >= itemIndex) return item
-	}
+	if (searchKey) {
+		const re = new RegExp(searchKey, 'g')
+		const match = item.innerHTML.match(re)
+		console.log('match', match)
+		if (match) {
+			console.log(match, configs.RESULT_COLOR)
+			item.innerHTML = item.innerHTML.replace(re, `<label style='background-color:${ configs.RESULT_COLOR }'>${ searchKey }</label>`)
+			itemIndexInPage += match.length
+			if (itemIndexInPage >= itemIndex) return item
+		}
+	} else
+		console.log('yokkk')
+
 	return null
 }
 
-function Search (hook, vm) {
+function fullTextSearch (hook, vm) {
 
 	hook.init(() => {
+		localStorage.removeItem('searcIndex')
+		localStorage.removeItem('searchKey')
+		ClearLabelStyle()
 	})
 
 	hook.beforeEach(content => {
@@ -315,4 +336,3 @@ function Search (hook, vm) {
 	hook.ready(() => {
 	})
 }
-export { Search, paths, promises, configs }
