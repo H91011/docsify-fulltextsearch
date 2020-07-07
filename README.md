@@ -20,7 +20,7 @@ window.$docsify = {
 
 ```
 
-For more info please look to `test` directory.
+For more info please look at o `test` directory.
 
 ### Test
 
