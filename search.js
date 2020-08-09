@@ -142,7 +142,7 @@ function bindEvents () {
 }
 
 function ClearLabelStyle () {
-	console.log('ClearLabelStyle tetiklendi')
+	// console.log('ClearLabelStyle tetiklendi')
 	const labels = document.querySelectorAll('label')
 	for (let i = 0; i < labels.length; i++)
 		labels[i].style = ''
@@ -150,10 +150,10 @@ function ClearLabelStyle () {
 
 function ClickToSearchResult (e) {
 	localStorage.setItem('searcIndex', e.attributes.data.nodeValue)
-	if (window.location == e.href) {
-		console.log(window.location, e.href)
+	if (window.location == e.href)
+		// console.log(window.location, e.href)
 		ScroolToResult()
-	}
+
 }
 
 function SearchInputOnPage (searchKey) {
@@ -171,7 +171,7 @@ function SearchInputOnPage (searchKey) {
 						res(true)
 				}))
 			})
-		console.log(paths)
+		// console.log(paths)
 
 		Promise.all(promises).then(() => {
 			const keys = Object.keys(paths)
@@ -198,7 +198,7 @@ function SearchInputOnPage (searchKey) {
 			return storageData
 		})
 			.then(matches => {
-				console.log('isteklerden sonra: ', matches)
+				// console.log('isteklerden sonra: ', matches)
 				ListSearcMatches(matches)
 				ScroolToResult()
 			})
@@ -221,9 +221,9 @@ function ListSearcMatches (matchs) {
 		return
 	}
 	let html = ''
-	console.log(matchs)
+	// console.log(matchs)
 	matchs.forEach(post => {
-		console.log(post)
+		// console.log(post)
 		html += `<div class="matching-post">
     <a href="${ post.url }">
     <h2>${ post.title }</h2>
@@ -269,7 +269,7 @@ function GetMDFiles (url, page, title, obj, res) {
 
 function ScroolToResult () {
 	const itemIndex = parseInt(localStorage.getItem('searcIndex'))
-	console.log(itemIndex)
+	// console.log(itemIndex)
 	if (itemIndex != null) {
 		const main = document.getElementById('main')
 		const itemIndexInPage = 0
@@ -280,7 +280,7 @@ function ScroolToResult () {
 				break
 
 		}
-		console.log('item', item)
+		// console.log('item', item)
 		if (item)
 			item.scrollIntoView({
 				behavior: 'smooth',
@@ -297,7 +297,7 @@ function FindResultElem (item, itemIndexInPage, itemIndex) {
 	if (searchKey) {
 		const re = new RegExp(searchKey, 'g')
 		const match = item.innerHTML.match(re)
-		console.log('match', match)
+		// console.log('match', match)
 		if (match) {
 			console.log(match, configs.RESULT_COLOR)
 			item.innerHTML = item.innerHTML.replace(re, `<label style='background-color:${ configs.RESULT_COLOR }'>${ searchKey }</label>`)
@@ -305,9 +305,9 @@ function FindResultElem (item, itemIndexInPage, itemIndex) {
 			if (itemIndexInPage >= itemIndex) return item
 		}
 	} else
-		console.log('yokkk')
+	// console.log('yokkk')
 
-	return null
+		return null
 }
 
 function fullTextSearch (hook, vm) {
