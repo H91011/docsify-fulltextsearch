@@ -97,7 +97,7 @@ function CreateSearchComponent () {
 	const search = Docsify.dom.find('.search')
 	if (!search) {
 		Docsify.dom.style(code)
-		const search = 'Arama ...'
+		const search = 'Search ...'
 		const html = `<div class="input-wrap">
     <input type="search" value="" placeholder="${ search }" aria-label="fullTextSearch text" />
     <div class="clear-button" onclick="ClearLabelStyle()">
@@ -126,6 +126,7 @@ function bindEvents () {
 	const $inputWrap = Docsify.dom.find($search, '.input-wrap')
 	let timeId
 	Docsify.dom.on($input, 'input', e => {
+
 		clearTimeout(timeId)
 		timeId = setTimeout(() => SearchInputOnPage(e.target.value.trim()) /* ListSearcMatches(e.target.value.trim())*/, 400)
 	})
@@ -152,13 +153,15 @@ function ClickToSearchResult (e) {
 	localStorage.setItem('searcIndex', e.attributes.data.nodeValue)
 	if (window.location == e.href) {
 		console.log(window.location, e.href)
-		ScroolToResult()
+		ScroolToResult(false)
+	} else {
+		ScroolToResult(true)
 	}
 }
 
 function SearchInputOnPage (searchKey) {
 	// Invoked each time after the data is fully loaded, no arguments,
-	if (searchKey) {
+	if (searchKey.length >1 ) {
 		Docsify.dom
 			.findAll('.sidebar-nav a:not(.section-link):not([data-nosearch])')
 			.forEach(item => {
@@ -171,7 +174,6 @@ function SearchInputOnPage (searchKey) {
 						res(true)
 				}))
 			})
-		console.log(paths)
 
 		Promise.all(promises).then(() => {
 			const keys = Object.keys(paths)
@@ -200,12 +202,15 @@ function SearchInputOnPage (searchKey) {
 			.then(matches => {
 				console.log('isteklerden sonra: ', matches)
 				ListSearcMatches(matches)
-				ScroolToResult()
+				ScroolToResult(true)
 			})
-	} else
+	} else{
 		ListSearcMatches([])
+	}
 
-
+	if(searchKey.length === 0){
+		ClearLabelStyle()
+	}
 }
 
 function ListSearcMatches (matchs) {
@@ -267,7 +272,31 @@ function GetMDFiles (url, page, title, obj, res) {
 	http.send()
 }
 
-function ScroolToResult () {
+function ScroolToResult (onSearch) {
+	const itemIndex = parseInt(localStorage.getItem('searcIndex'))
+	console.log(itemIndex)
+	if (itemIndex != null) {
+		const main = document.getElementById('main')
+		const itemIndexInPage = 0
+		let item = null
+		for (let i = 0; i < main.children.length; i++) {
+			item = FindResultElem(main.children[i], itemIndexInPage, itemIndex, onSearch)
+			if (item)
+				break
+
+		}
+		if (item)
+			item.scrollIntoView({
+				behavior: 'smooth',
+				block: 'end',
+				inline: 'start',
+			})
+	}
+
+// item bulması lazım ama label eklemesin
+}
+
+function AddColor(){
 	const itemIndex = parseInt(localStorage.getItem('searcIndex'))
 	console.log(itemIndex)
 	if (itemIndex != null) {
@@ -288,19 +317,19 @@ function ScroolToResult () {
 				inline: 'start',
 			})
 	}
-
-
 }
 
-function FindResultElem (item, itemIndexInPage, itemIndex) {
+function FindResultElem (item, itemIndexInPage, itemIndex, setLabel= true) {
 	const searchKey = localStorage.getItem('searchKey')
 	if (searchKey) {
 		const re = new RegExp(searchKey, 'g')
 		const match = item.innerHTML.match(re)
 		console.log('match', match)
 		if (match) {
-			console.log(match, configs.RESULT_COLOR)
-			item.innerHTML = item.innerHTML.replace(re, `<label style='background-color:${ configs.RESULT_COLOR }'>${ searchKey }</label>`)
+			if(setLabel){
+				console.log("sdfgsgf")
+				item.innerHTML = item.innerHTML.replace(re, `<label style='background-color:${ configs.RESULT_COLOR }'>${ searchKey }</label>`)
+			}
 			itemIndexInPage += match.length
 			if (itemIndexInPage >= itemIndex) return item
 		}
@@ -327,7 +356,7 @@ function fullTextSearch (hook, vm) {
 
 	hook.doneEach((x, vm) => {
 		CreateSearchComponent()
-		ScroolToResult()
+		ScroolToResult(true)
 	})
 
 	hook.mounted(() => {
