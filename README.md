@@ -39,7 +39,7 @@ You need to instal docsify-cli before test.
 
 ### Config:
 
-You can change match key color and not found text in `search.js`, config object is below:
+You can change match key color and not found text in `index.js`, config object is below:
 
 ```javascript
 
