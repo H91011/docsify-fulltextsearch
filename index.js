@@ -366,3 +366,6 @@ function fullTextSearch (hook, vm) {
 	hook.ready(() => {
 	})
 }
+
+
+export { fullTextSearch }
