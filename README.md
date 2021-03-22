@@ -7,6 +7,14 @@ I write this plugin because docsify search plugin is not good and I decide write
 
 ### Usage:
 
+import plugin and add to docsify: 
+
+```javascirpt
+
+import fullTextSearch from "docsify-fulltextsearch"
+
+```
+
 ```javascirpt
 
 window.$docsify = {

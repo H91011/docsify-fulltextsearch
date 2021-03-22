@@ -368,4 +368,4 @@ function fullTextSearch (hook, vm) {
 }
 
 
-export { fullTextSearch }
+export default fullTextSearch 
