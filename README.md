@@ -30,7 +30,7 @@ window.$docsify = {
 
 For more info please look at o `test` directory.
 
-**İf its not work you can directy accsess from "node_modules/docsify-fulltextsearch/index.js"**
+**If its not work you can directy accsess from "node_modules/docsify-fulltextsearch/index.js"**
 
 ### Test
 
