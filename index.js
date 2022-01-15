@@ -200,7 +200,6 @@ function SearchInputOnPage (searchKey) {
 			return storageData
 		})
 			.then(matches => {
-				//console.log('isteklerden sonra: ', matches)
 				ListSearcMatches(matches)
 				ScroolToResult(true)
 			})
@@ -226,9 +225,7 @@ function ListSearcMatches (matchs) {
 		return
 	}
 	let html = ''
-	//console.log(matchs)
 	matchs.forEach(post => {
-		//console.log(post)
 		html += `<div class="matching-post">
     <a href="${ post.url }">
     <h2>${ post.title }</h2>
@@ -274,7 +271,6 @@ function GetMDFiles (url, page, title, obj, res) {
 
 function ScroolToResult (onSearch) {
 	const itemIndex = parseInt(localStorage.getItem('searcIndex'))
-	//console.log(itemIndex)
 	if (itemIndex != null) {
 		const main = document.getElementById('main')
 		const itemIndexInPage = 0
@@ -296,47 +292,19 @@ function ScroolToResult (onSearch) {
 // item bulması lazım ama label eklemesin
 }
 
-function AddColor(){
-	const itemIndex = parseInt(localStorage.getItem('searcIndex'))
-	//console.log(itemIndex)
-	if (itemIndex != null) {
-		const main = document.getElementById('main')
-		const itemIndexInPage = 0
-		let item = null
-		for (let i = 0; i < main.children.length; i++) {
-			item = FindResultElem(main.children[i], itemIndexInPage, itemIndex)
-			if (item)
-				break
-
-		}
-		//console.log('item', item)
-		if (item)
-			item.scrollIntoView({
-				behavior: 'smooth',
-				block: 'end',
-				inline: 'start',
-			})
-	}
-}
-
 function FindResultElem (item, itemIndexInPage, itemIndex, setLabel= true) {
 	const searchKey = localStorage.getItem('searchKey')
 	if (searchKey) {
 		const re = new RegExp(searchKey, 'g')
 		const match = item.innerHTML.match(re)
-		//console.log('match', match)
 		if (match) {
 			if(setLabel){
-				//console.log("sdfgsgf")
 				item.innerHTML = item.innerHTML.replace(re, `<label style='background-color:${ configs.RESULT_COLOR }'>${ searchKey }</label>`)
 			}
 			itemIndexInPage += match.length
 			if (itemIndexInPage >= itemIndex) return item
 		}
 	} 
-	// else
-		//console.log('yokkk')
-
 	return null
 }
 
