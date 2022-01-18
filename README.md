@@ -6,8 +6,9 @@ Every match list on sidebar and its show which page have matches.
 I write this plugin because docsify search plugin is not good and I decide write a good plugin for that.
 
 ### Usage:
-In `./test/index.html`:
+Copy index.js to index.html directory an add like below: 
 
+In `./test/index.html`:
 ```javascirpt
 
   <script src="index.js"></script>
