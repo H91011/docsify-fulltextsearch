@@ -7,24 +7,29 @@ I write this plugin because docsify search plugin is not good and I decide write
 
 ### Usage:
 
-import plugin and add to docsify: 
+
+In `./test/index.html`:
 
 ```javascirpt
 
-import fullTextSearch from "docsify-fulltextsearch"
+  <script src="search.js"></script>
+  <script>
 
-```
-
-```javascirpt
-
-window.$docsify = {
-  name: '',
-  repo: '',
-  loadSidebar: true,
-  plugins: [
-    fullTextSearch
-  ]
-}
+    setFullTextSearchConfig({
+      NO_DATA_TEXT: 'sorry I cant found anything...',
+      RESULT_COLOR: 'violet',
+      INSENSITIVE: true
+    })
+    
+    window.$docsify = {
+      name: '',
+      repo: '',
+      loadSidebar: true,
+      plugins: [
+        fullTextSearch
+      ]
+    }
+  </script>
 
 ```
 
@@ -34,20 +39,42 @@ For more info please look at o `test` directory.
 
 ### Test
 
-For test :
-`npm run test`  
-
 You need to instal docsify-cli before test.
+
+For test :
+`npm install -g docsify-cli`
+`npm run test`  
 
 ### Config:
 
-You can change match key color and not found text in `index.js`, config object is below:
+Default config values:
 
 ```javascript
 
 const configs = {
 	NO_DATA_TEXT: 'Nothing Found ...',
 	RESULT_COLOR: 'yellow',
+	INSENSITIVE: false
 }
 
 ```
+
+You can change with `setFullTextSearchConfig`
+
+```javascript
+
+    // change multiple
+    setFullTextSearchConfig({
+      NO_DATA_TEXT: 'sorry I cant found anything...',
+      RESULT_COLOR: 'violet',
+      INSENSITIVE: true
+    })
+
+    //or single: 
+    setFullTextSearchConfig({
+      RESULT_COLOR: 'violet',
+    })
+
+```
+
+
