@@ -51,9 +51,9 @@ Default config values:
 ```javascript
 
 const configs = {
-	NO_DATA_TEXT: 'Nothing Found ...',
-	RESULT_COLOR: 'yellow',
-	INSENSITIVE: false
+    NO_DATA_TEXT: 'Nothing Found ...',
+    RESULT_COLOR: 'yellow',
+    INSENSITIVE: false
 }
 
 ```
