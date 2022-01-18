@@ -74,6 +74,7 @@ setFullTextSearchConfig({
   RESULT_COLOR: 'violet',
 })
 
+
 ```
 
 
