@@ -39,7 +39,6 @@ You need to instal docsify-cli before test.
 
 For test :
 `npm install -g docsify-cli`
-
 `npm run test`  
 
 ### Config:
