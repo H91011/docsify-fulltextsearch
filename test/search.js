@@ -3,12 +3,13 @@ const promises = []
 // const NO_DATA_TEXT = "Sonuç bulunamadı ..."
 // var ResultColor = 'yellow'
 
-const configs = {
+let configs = {
 	NO_DATA_TEXT: 'Nothing Found ...',
 	RESULT_COLOR: 'yellow',
+	INSENSITIVE: false
 }
 
-function CreateSearchComponent () {
+function CreateSearchComponent() {
 	const code = `
   .sidebar {
   padding-top: 0;
@@ -99,7 +100,7 @@ function CreateSearchComponent () {
 		Docsify.dom.style(code)
 		const search = 'Search ...'
 		const html = `<div class="input-wrap">
-    <input type="search" value="" placeholder="${ search }" aria-label="fullTextSearch text" />
+    <input type="search" value="" placeholder="${search}" aria-label="fullTextSearch text" />
     <div class="clear-button" onclick="ClearLabelStyle()">
       <svg width="26" height="24">
         <circle cx="12" cy="12" r="11" fill="#ccc" />
@@ -120,7 +121,7 @@ function CreateSearchComponent () {
 
 }
 
-function bindEvents () {
+function bindEvents() {
 	const $search = Docsify.dom.find('div.search')
 	const $input = Docsify.dom.find($search, 'input')
 	const $inputWrap = Docsify.dom.find($search, '.input-wrap')
@@ -135,33 +136,34 @@ function bindEvents () {
 		if (e.target.tagName !== 'INPUT') {
 			$input.value = ''
 			SearchInputOnPage(null)
-			// ClearLabelStyle()
+			ClearLabelStyle()
 		} else if (!$input.value)
 			ClearLabelStyle()
 
 	})
 }
 
-function ClearLabelStyle () {
-	console.log('ClearLabelStyle tetiklendi')
+function ClearLabelStyle() {
+	//console.log('ClearLabelStyle tetiklendi')
 	const labels = document.querySelectorAll('label')
 	for (let i = 0; i < labels.length; i++)
 		labels[i].style = ''
 }
 
-function ClickToSearchResult (e) {
+function ClickToSearchResult(e) {
 	localStorage.setItem('searcIndex', e.attributes.data.nodeValue)
 	if (window.location == e.href) {
-		console.log(window.location, e.href)
+		//console.log(window.location, e.href)
 		ScroolToResult(false)
 	} else {
 		ScroolToResult(true)
 	}
 }
 
-function SearchInputOnPage (searchKey) {
+function SearchInputOnPage(searchKey) {
 	// Invoked each time after the data is fully loaded, no arguments,
-	if (searchKey.length >1 ) {
+	if (searchKey !== null && searchKey.length > 1) {
+		console.log("geldi");
 		Docsify.dom
 			.findAll('.sidebar-nav a:not(.section-link):not([data-nosearch])')
 			.forEach(item => {
@@ -170,13 +172,14 @@ function SearchInputOnPage (searchKey) {
 					const url = page.replace(/\/\#\//, '/') + '.md'
 					if (url.indexOf('/.md') === -1)
 						GetMDFiles(url, page, item.innerText, paths, res)
-					 else
+					else
 						res(true)
 				}))
 			})
 
 		Promise.all(promises).then(() => {
 			const keys = Object.keys(paths)
+			console.log(paths);
 			// const searchKey = 'pointObj'
 			localStorage.setItem('regex', '(.{30}|.)' + searchKey + '(.{30}|.)')
 			localStorage.setItem('searchKey', searchKey)
@@ -185,13 +188,17 @@ function SearchInputOnPage (searchKey) {
 			let found
 			for (let i = keys.length; i--;) {
 				found = paths[keys[i]].data.match(re)
-				if (found)
+				if (found){
 					storageData.push({
 						url: paths[keys[i]].page,
 						title: paths[keys[i]].title,
 						key: searchKey,
 						results: found,
 					})
+				} else {
+					storageData.length = 0
+				}
+
 
 			}
 			// if(data.length){
@@ -200,20 +207,20 @@ function SearchInputOnPage (searchKey) {
 			return storageData
 		})
 			.then(matches => {
-				console.log('isteklerden sonra: ', matches)
+				console.log("matches",matches);
 				ListSearcMatches(matches)
 				ScroolToResult(true)
 			})
-	} else{
+	} else {
 		ListSearcMatches([])
 	}
 
-	if(searchKey.length === 0){
+	if (searchKey.length === 0) {
 		ClearLabelStyle()
 	}
 }
 
-function ListSearcMatches (matchs) {
+function ListSearcMatches(matchs) {
 	const $search = Docsify.dom.find('div.search')
 	const $panel = Docsify.dom.find($search, '.results-panel')
 	const $clearBtn = Docsify.dom.find($search, '.clear-button')
@@ -226,21 +233,19 @@ function ListSearcMatches (matchs) {
 		return
 	}
 	let html = ''
-	console.log(matchs)
 	matchs.forEach(post => {
-		console.log(post)
 		html += `<div class="matching-post">
-    <a href="${ post.url }">
-    <h2>${ post.title }</h2>
-    <!-- <p>${ post.results }</p>  -->
+    <a href="${post.url}">
+    <h2>${post.title}</h2>
+    <!-- <p>${post.results}</p>  -->
     </a>
     </div>`
 
 		post.results.forEach((res, i) => {
 			html += `<div class="matching-post">
-      <a href="${ post.url }" onclick="ClickToSearchResult(this)" data="${ i }">
-      <!-- <h2>${ post.url }</h2> -->
-      <p>${ res }</p>
+      <a href="${post.url}" onclick="ClickToSearchResult(this)" data="${i}">
+      <!-- <h2>${post.url}</h2> -->
+      <p>${res}</p>
       </a>
       </div>`
 		})
@@ -249,14 +254,14 @@ function ListSearcMatches (matchs) {
 
 	$panel.classList.add('show')
 	$clearBtn.classList.add('show')
-	$panel.innerHTML = html || `<p class="empty">${ configs.NO_DATA_TEXT }</p>`
+	$panel.innerHTML = html || `<p class="empty">${configs.NO_DATA_TEXT}</p>`
 	// if (options.hideOtherSidebarContent) {
 	//   $sidebarNav.classList.add('hide');
 	//   $appName.classList.add('hide');
 	// }
 }
 
-function GetMDFiles (url, page, title, obj, res) {
+function GetMDFiles(url, page, title, obj, res) {
 	const http = new XMLHttpRequest()
 	http.onreadystatechange = function () {
 		if (this.readyState == 4 && this.status == 200) {
@@ -272,9 +277,8 @@ function GetMDFiles (url, page, title, obj, res) {
 	http.send()
 }
 
-function ScroolToResult (onSearch) {
+function ScroolToResult(onSearch) {
 	const itemIndex = parseInt(localStorage.getItem('searcIndex'))
-	console.log(itemIndex)
 	if (itemIndex != null) {
 		const main = document.getElementById('main')
 		const itemIndexInPage = 0
@@ -293,53 +297,40 @@ function ScroolToResult (onSearch) {
 			})
 	}
 
-// item bulması lazım ama label eklemesin
+	// item bulması lazım ama label eklemesin
 }
 
-function AddColor(){
-	const itemIndex = parseInt(localStorage.getItem('searcIndex'))
-	console.log(itemIndex)
-	if (itemIndex != null) {
-		const main = document.getElementById('main')
-		const itemIndexInPage = 0
-		let item = null
-		for (let i = 0; i < main.children.length; i++) {
-			item = FindResultElem(main.children[i], itemIndexInPage, itemIndex)
-			if (item)
-				break
-
-		}
-		console.log('item', item)
-		if (item)
-			item.scrollIntoView({
-				behavior: 'smooth',
-				block: 'end',
-				inline: 'start',
-			})
-	}
-}
-
-function FindResultElem (item, itemIndexInPage, itemIndex, setLabel= true) {
+function FindResultElem(item, itemIndexInPage, itemIndex, setLabel = true) {
 	const searchKey = localStorage.getItem('searchKey')
 	if (searchKey) {
-		const re = new RegExp(searchKey, 'g')
+		const re = new RegExp(searchKey, configs.INSENSITIVE ? 'gi' : 'g')
 		const match = item.innerHTML.match(re)
-		console.log('match', match)
 		if (match) {
-			if(setLabel){
-				console.log("sdfgsgf")
-				item.innerHTML = item.innerHTML.replace(re, `<label style='background-color:${ configs.RESULT_COLOR }'>${ searchKey }</label>`)
+			if (setLabel) {
+				const unique = match.filter((elem, index, self) => {
+					return index === self.indexOf(elem);
+				})
+
+				if (unique.length === 2 && configs.INSENSITIVE) {
+					item.innerHTML = item.innerHTML.replace(unique[0], `<label style='background-color:${configs.RESULT_COLOR}'>${unique[0]}</label>`)
+					item.innerHTML = item.innerHTML.replace(unique[1], `<label style='background-color:${configs.RESULT_COLOR}'>${unique[1]}</label>`)
+				}
+				else {
+					item.innerHTML = item.innerHTML.replace(re, `<label style='background-color:${configs.RESULT_COLOR}'>${unique[0]}</label>`)
+				}
 			}
 			itemIndexInPage += match.length
 			if (itemIndexInPage >= itemIndex) return item
 		}
-	} else
-		console.log('yokkk')
-
+	}
 	return null
 }
 
-function fullTextSearch (hook, vm) {
+ function setFullTextSearchConfig(config){
+	configs = {...configs, ...config }
+}
+
+ function fullTextSearch(hook, vm) {
 
 	hook.init(() => {
 		localStorage.removeItem('searcIndex')
