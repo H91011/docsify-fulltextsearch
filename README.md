@@ -51,9 +51,9 @@ Default config values:
 ```javascript
 
 const configs = {
-    NO_DATA_TEXT: 'Nothing Found ...',
-    RESULT_COLOR: 'yellow',
-    INSENSITIVE: false
+  NO_DATA_TEXT: 'Nothing Found ...',
+  RESULT_COLOR: 'yellow',
+  INSENSITIVE: false
 }
 
 ```
@@ -62,17 +62,17 @@ You can change with `setFullTextSearchConfig`
 
 ```javascript
 
-    // change multiple
-    setFullTextSearchConfig({
-      NO_DATA_TEXT: 'sorry I cant found anything...',
-      RESULT_COLOR: 'violet',
-      INSENSITIVE: true
-    })
+  // change multiple
+  setFullTextSearchConfig({
+    NO_DATA_TEXT: 'sorry I cant found anything...',
+    RESULT_COLOR: 'violet',
+    INSENSITIVE: true
+  })
 
-    //or single: 
-    setFullTextSearchConfig({
-      RESULT_COLOR: 'violet',
-    })
+  //or single: 
+  setFullTextSearchConfig({
+    RESULT_COLOR: 'violet',
+  })
 
 ```
 
