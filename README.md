@@ -32,16 +32,14 @@ In `./test/index.html`:
 
 ```
 
-For more info please look at o `test` directory.
-
-**If its not work you can directy accsess from "node_modules/docsify-fulltextsearch/index.js"**
-
+For more info please look at o `test` directory
 ### Test
 
 You need to instal docsify-cli before test.
 
 For test :
 `npm install -g docsify-cli`
+
 `npm run test`  
 
 ### Config:
